@@ -1,10 +1,29 @@
 {
-  "user_account_settings": {
+  "user_settings": {
     "profile": {
       "display_name": "4zx16",
       "avatar_url": "https://cdn.krynet.com/avatars/4zx16.png",
       "status_message": "Grinding code, no time for bugs.",
-      "theme": "dark"
+      "theme": "dark",
+      "language": "en-US",
+      "font_size": 14,
+      "profile_visibility": "friends_only",
+      "last_seen_visibility": "nobody",
+      "message_read_receipts": true,
+      "blocked_users": ["user1234", "user5678"]
+    },
+    "notifications": {
+      "email": true,
+      "push": true,
+      "vc_activity_alerts": true,
+      "messages": true,
+      "desktop": true,
+      "mute_all": false,
+      "do_not_disturb": {
+        "enabled": false,
+        "start_time": "22:00",
+        "end_time": "07:00"
+      }
     },
     "security": {
       "mfa_enabled": true,
@@ -19,22 +38,36 @@
         }
       ]
     },
-    "privacy": {
-      "profile_visibility": "friends_only",
-      "message_read_receipts": true,
-      "last_seen_visibility": "nobody",
-      "blocked_users": ["user1234", "user5678"]
+    "connectivity": {
+      "auto_reconnect": true,
+      "reconnect_attempts": 5,
+      "reconnect_interval_seconds": 10
     },
-    "notifications": {
-      "email_notifications": true,
-      "push_notifications": true,
-      "vc_activity_alerts": true,
-      "message_notifications": true,
-      "do_not_disturb_schedule": {
-        "enabled": false,
-        "start_time": "22:00",
-        "end_time": "07:00"
+    "ui": {
+      "theme": "dark",
+      "show_timestamps": true,
+      "custom_css_background_enabled": true,
+      "custom_css_background_url": "https://cdn.krynet.com/user-backgrounds/4zx16-bg.css",
+      "theme_overrides": {
+        "enabled": true,
+        "context": "server_view",
+        "use_boosted_server_theme": true,
+        "revert_on_exit": true,
+        "conditions": {
+          "must_be_boosted": true,
+          "must_have_custom_css": true
+        },
+        "fallbacks": {
+          "free_users": "dark",
+          "premium_users": "custom_css_background_url"
+        }
       }
+    },
+    "voice_chat": {
+      "default_microphone": "system_default",
+      "default_speaker": "system_default",
+      "push_to_talk_enabled": false,
+      "push_to_talk_key": "Space"
     }
   }
 }
