@@ -1,6 +1,6 @@
 {
   "krynet_api": {
-    "base_url": "https://krynet.ai/api/",
+    "base_url": "https://krynet.ai/api",
     "authentication": {
       "required": true,
       "method": "Bearer Token",
