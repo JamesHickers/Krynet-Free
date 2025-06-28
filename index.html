@@ -288,33 +288,28 @@ document.body.insertAdjacentHTML('beforeend', termsModalHTML);
 const termsModal = document.getElementById("termsModal");
 const agreeBtn = document.getElementById("agreeBtn");
 const disagreeBtn = document.getElementById("disagreeBtn");
-
 const joinNowBtn = document.getElementById("joinNow");
 const loginBtn = document.getElementById("loginBtn");
 
 joinNowBtn.addEventListener("click", () => modal.style.display = "flex");
 loginBtn.addEventListener("click", () => modal.style.display = "flex");
-
 window.addEventListener("click", (e) => {
   if (e.target === modal) modal.style.display = "none";
   if (e.target === termsModal) termsModal.style.display = "none";
 });
-
-async function loginWithApi(username, password, mfaCode) {
+async function loginWithApi(username, password, mfaCode = null) {
   if (!krynetApiConfig) {
     alert("API config not loaded yet. Try again in a sec.");
     return null;
   }
-
   const loginEndpoint = krynetApiConfig.endpoints.accounts.login;
   const url = krynetApiConfig.base_url.replace(/\/$/, '') + loginEndpoint.path;
 
   const body = {
     username_or_email: username,
     password: password,
-    mfa_code: mfaCode
+    ...(mfaCode ? { mfa_code: mfaCode } : {})
   };
-
   try {
     const response = await fetch(url, {
       method: loginEndpoint.method,
@@ -323,20 +318,17 @@ async function loginWithApi(username, password, mfaCode) {
       },
       body: JSON.stringify(body)
     });
-
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Login failed: ${response.status} ${errorText}`);
     }
-
     const data = await response.json();
-    return data; // token, refresh_token, mfa_required etc
+    return data;
   } catch (error) {
     alert(`Login error: ${error.message}`);
     return null;
   }
 }
-
 async function login() {
   const user = document.getElementById('username').value.trim();
   const pass = document.getElementById('password').value.trim();
@@ -344,25 +336,33 @@ async function login() {
     alert("Please enter username and password.");
     return;
   }
+  // First attempt without MFA
+  let loginResult = await loginWithApi(user, pass);
 
-  const mfa = prompt("Enter your MFA code (required):");
-  if (!mfa) {
-    alert("MFA code is required.");
-    return;
+  if (!loginResult) return;
+
+  if (loginResult.mfa_required) {
+    const mfa = prompt("MFA is enabled on your account. Enter your MFA code:");
+    if (!mfa) {
+      alert("MFA code is required.");
+      return;
+    }
+    loginResult = await loginWithApi(user, pass, mfa);
+    if (!loginResult || !loginResult.token) {
+      alert("Login failed after MFA check. Check your MFA code and try again.");
+      return;
+    }
   }
-
-  const loginResult = await loginWithApi(user, pass, mfa);
-  if (loginResult && loginResult.token) {
+  if (loginResult.token) {
     modal.style.display = "none";
     isLoggedIn = true;
     alert("Login successful! Welcome.");
-    // Store token if needed: localStorage.setItem('krynet_token', loginResult.token);
 
     termsModal.style.display = "flex";
 
     agreeBtn.onclick = () => {
       termsModal.style.display = "none";
-      window.location.href = "https://example.com/krynet-web";
+      window.location.href = "/web";
     };
 
     disagreeBtn.onclick = () => {
@@ -372,70 +372,15 @@ async function login() {
       document.getElementById('password').value = "";
     };
   } else {
-    alert("Login failed, check your credentials and MFA code.");
+    alert("Login failed, check your credentials.");
     document.getElementById('password').value = "";
   }
-}
-
-function detectOS() {
-  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-  if (/android/i.test(userAgent)) return "Android";
-  if (/iPad|iPhone|iPod/.test(userAgent)) return "iOS";
-  if (/Win/i.test(userAgent)) return "Windows";
-  if (/Mac/i.test(userAgent)) return "macOS";
-  if (/Linux/.test(userAgent)) return "Linux";
-  return "Unknown";
-}
-
-document.getElementById("installBtn").addEventListener("click", () => {
-  const os = detectOS();
-  let url = "";
-
-  switch (os) {
-    case "Android": url = "https://example.com/downloads/krynet.apk"; break;
-    case "iOS": url = "https://example.com/downloads/krynet-ios.ipa"; break;
-    case "Windows": url = "https://example.com/downloads/krynet-installer.exe"; break;
-    case "macOS": url = "https://example.com/downloads/krynet-macos.dmg"; break;
-    case "Linux": url = "https://example.com/downloads/krynet-linux.AppImage"; break;
-    default:
-      alert("⚠️ Your operating system could not be detected or is not supported.");
-      return;
-  }
-
-  const proceed = confirm("You are about to leave Krynet to download the app for your OS.\n\nDo you want to continue?");
+  document.getElementById("installBtn").addEventListener("click", () => {
+  const proceed = confirm("You are about to leave KrynetAI.free to visit Krynet.ai.\n\nDo you want to continue?");
   if (proceed) {
-    window.location.href = url;
+    window.location.href = "https://krynet.ai";
   }
 });
-
-// Typewriter effect
-const phrases = ["Encrypted.", "Anonymous.", "Yours."];
-let phraseIndex = 0;
-let charIndex = 0;
-const typeTarget = document.getElementById("typewriter");
-
-function type() {
-  if (charIndex <= phrases[phraseIndex].length) {
-    typeTarget.textContent = phrases[phraseIndex].substring(0, charIndex);
-    charIndex++;
-    setTimeout(type, 100);
-  } else {
-    setTimeout(erase, 2000);
-  }
-}
-
-function erase() {
-  if (charIndex > 0) {
-    charIndex--;
-    typeTarget.textContent = phrases[phraseIndex].substring(0, charIndex);
-    setTimeout(erase, 50);
-  } else {
-    phraseIndex = (phraseIndex + 1) % phrases.length;
-    setTimeout(type, 500);
-  }
-}
-
-type();
   </script>
 </body>
 </html>
