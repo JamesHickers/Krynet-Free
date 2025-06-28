@@ -18,14 +18,33 @@
       background-color: #1a0000;
       padding: 1rem 2rem;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    header h1 {
+      color: #ff4d4d;
+      margin: 0;
+    }
+
+    header p {
+      color: #ff4d4d;
+      font-style: italic;
+      font-size: 0.9rem;
+      margin: 0.2rem 0 1rem 0;
+    }
+
+    nav {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+      justify-content: flex-start;
+      align-items: center;
     }
 
     nav a {
       color: #fff;
-      margin-left: 1rem;
       text-decoration: none;
       font-weight: 500;
       transition: color 0.2s ease;
@@ -40,7 +59,7 @@
       color: white;
       border: none;
       font-size: 1rem;
-      margin-left: 1rem;
+      margin-left: auto;
       cursor: pointer;
       font-weight: 500;
     }
@@ -52,23 +71,6 @@
     .main {
       text-align: center;
       padding: 5rem 2rem;
-    }
-
-    .main h2 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: #ff4d4d;
-      white-space: nowrap;
-      overflow: hidden;
-      border-right: 2px solid #ff4d4d;
-      display: inline-block;
-      animation: blink 0.75s step-end infinite;
-    }
-
-    @keyframes blink {
-      50% {
-        border-color: transparent;
-      }
     }
 
     .main p {
@@ -202,7 +204,8 @@
 </head>
 <body>
   <header>
-    <h1 style="color:#ff4d4d">KrynetAI.free</h1>
+    <h1>KrynetAI.free</h1>
+    <p>Not affiliated with Krynet.ai and not official.</p>
     <nav>
       <a href="#">Home</a>
       <a href="https://bnjcnmxk.github.io/jeok2wjeih3ugr/features.html">Features</a>
@@ -212,7 +215,6 @@
   </header>
 
   <main class="main">
-    <h2 id="typewriter"></h2>
     <p>
       <strong>Note:</strong> This is <span style="color:#ff4d4d">KrynetAI.free</span>, not Krynet.ai.<br>
       Krynet offers a secure and private communication platform — no personal identifiers, no tracking, and zero compromises.
@@ -253,134 +255,124 @@
   </div>
 
   <script>
-let krynetApiConfig = null;
+    let krynetApiConfig = null;
 
-// Fetch API config on page load
-fetch('api.json')
-  .then(res => {
-    if (!res.ok) throw new Error('API config load failed');
-    return res.json();
-  })
-  .then(data => {
-    krynetApiConfig = data.krynet_api;
-    console.log('Krynet API config loaded:', krynetApiConfig);
-  })
-  .catch(err => {
-    console.error('Failed to load API config:', err);
-    alert('API config loading failed — some features may break.');
-  });
+    // Fetch API config on page load
+    fetch('api.json')
+      .then(res => {
+        if (!res.ok) throw new Error('API config load failed');
+        return res.json();
+      })
+      .then(data => {
+        krynetApiConfig = data.krynet_api;
+        console.log('Krynet API config loaded:', krynetApiConfig);
+      })
+      .catch(err => {
+        console.error('Failed to load API config:', err);
+        alert('API config loading failed — some features may break.');
+      });
 
-let isLoggedIn = false;
-const modal = document.getElementById("loginModal");
+    let isLoggedIn = false;
+    const modal = document.getElementById("loginModal");
 
-const termsModalHTML = `
-  <div class="modal" id="termsModal" style="display:none; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.7); z-index:1100;">
-    <div class="modal-content" style="width:350px; max-width:90%; text-align:center;">
-      <h2>Agree to Terms & Privacy</h2>
-      <p>Please <a href="https://bnjcnmxk.github.io/jeok2wjeih3ugr/securitysite" target="_blank" style="color:#ff4d4d; text-decoration:underline;">read our Terms and Privacy Policy</a>.</p>
-      <p>Do you agree to the Terms and Privacy Policy?</p>
-      <button id="agreeBtn" style="margin-bottom:10px; background-color:#28a745;">Yes</button>
-      <button id="disagreeBtn" style="background-color:#dc3545;">No</button>
-    </div>
-  </div>
-`;
-document.body.insertAdjacentHTML('beforeend', termsModalHTML);
-const termsModal = document.getElementById("termsModal");
-const agreeBtn = document.getElementById("agreeBtn");
-const disagreeBtn = document.getElementById("disagreeBtn");
-const joinNowBtn = document.getElementById("joinNow");
-const loginBtn = document.getElementById("loginBtn");
+    const termsModalHTML = `
+      <div class="modal" id="termsModal" style="display:none; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.7); z-index:1100;">
+        <div class="modal-content" style="width:350px; max-width:90%; text-align:center;">
+          <h2>Agree to Terms & Privacy</h2>
+          <p>Please <a href="https://krynet.ai/tos" target="_blank" style="color:#ff4d4d; text-decoration:underline;">read our Terms and Privacy Policy</a>.</p>
+          <p>Do you agree to the Terms and Privacy Policy?</p>
+          <button id="agreeBtn" style="margin-bottom:10px; background-color:#28a745;">Yes</button>
+          <button id="disagreeBtn" style="background-color:#dc3545;">No</button>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', termsModalHTML);
+    const termsModal = document.getElementById("termsModal");
+    const agreeBtn = document.getElementById("agreeBtn");
+    const disagreeBtn = document.getElementById("disagreeBtn");
+    const joinNowBtn = document.getElementById("joinNow");
+    const loginBtn = document.getElementById("loginBtn");
 
-joinNowBtn.addEventListener("click", () => modal.style.display = "flex");
-loginBtn.addEventListener("click", () => modal.style.display = "flex");
-window.addEventListener("click", (e) => {
-  if (e.target === modal) modal.style.display = "none";
-  if (e.target === termsModal) termsModal.style.display = "none";
-});
-async function loginWithApi(username, password, mfaCode = null) {
-  if (!krynetApiConfig) {
-    alert("API config not loaded yet. Try again in a sec.");
-    return null;
-  }
-  const loginEndpoint = krynetApiConfig.endpoints.accounts.login;
-  const url = krynetApiConfig.base_url.replace(/\/$/, '') + loginEndpoint.path;
+    joinNowBtn.addEventListener("click", () => modal.style.display = "flex");
+    loginBtn.addEventListener("click", () => modal.style.display = "flex");
 
-  const body = {
-    username_or_email: username,
-    password: password,
-    ...(mfaCode ? { mfa_code: mfaCode } : {})
-  };
-  try {
-    const response = await fetch(url, {
-      method: loginEndpoint.method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
+    window.addEventListener("click", (e) => {
+      if (e.target === modal) modal.style.display = "none";
+      if (e.target === termsModal) termsModal.style.display = "none";
     });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Login failed: ${response.status} ${errorText}`);
+
+    async function loginWithApi(username, password, mfaCode = null) {
+      if (!krynetApiConfig) {
+        alert("API config not loaded yet. Try again in a sec.");
+        return null;
+      }
+      const loginEndpoint = krynetApiConfig.endpoints.accounts.login;
+      const url = krynetApiConfig.base_url.replace(/\/$/, '') + loginEndpoint.path;
+
+      const body = {
+        username_or_email: username,
+        password: password,
+        ...(mfaCode ? { mfa_code: mfaCode } : {})
+      };
+      try {
+        const response = await fetch(url, {
+          method: loginEndpoint.method,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Login failed: ${response.status} ${errorText}`);
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        alert(`Login error: ${error.message}`);
+        return null;
+      }
     }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    alert(`Login error: ${error.message}`);
-    return null;
-  }
-}
-async function login() {
-  const user = document.getElementById('username').value.trim();
-  const pass = document.getElementById('password').value.trim();
-  if (!user || !pass) {
-    alert("Please enter username and password.");
-    return;
-  }
-  // First attempt without MFA
-  let loginResult = await loginWithApi(user, pass);
 
-  if (!loginResult) return;
+    async function login() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      if (!user || !pass) {
+        alert("Please enter username and password.");
+        return;
+      }
+      // Login attempt without MFA, MFA not required
+      const loginResult = await loginWithApi(user, pass);
+      if (!loginResult || !loginResult.token) {
+        alert("Login failed, check your credentials.");
+        document.getElementById('password').value = "";
+        return;
+      }
+      modal.style.display = "none";
+      isLoggedIn = true;
+      alert("Login successful! Welcome.");
 
-  if (loginResult.mfa_required) {
-    const mfa = prompt("MFA is enabled on your account. Enter your MFA code:");
-    if (!mfa) {
-      alert("MFA code is required.");
-      return;
+      termsModal.style.display = "flex";
+
+      agreeBtn.onclick = () => {
+        termsModal.style.display = "none";
+        window.location.href = "/web";
+      };
+
+      disagreeBtn.onclick = () => {
+        alert("You must agree to the Terms and Privacy Policy to proceed.");
+        termsModal.style.display = "none";
+        modal.style.display = "flex";
+        document.getElementById('password').value = "";
+      };
     }
-    loginResult = await loginWithApi(user, pass, mfa);
-    if (!loginResult || !loginResult.token) {
-      alert("Login failed after MFA check. Check your MFA code and try again.");
-      return;
-    }
-  }
-  if (loginResult.token) {
-    modal.style.display = "none";
-    isLoggedIn = true;
-    alert("Login successful! Welcome.");
-
-    termsModal.style.display = "flex";
-
-    agreeBtn.onclick = () => {
-      termsModal.style.display = "none";
-      window.location.href = "/web";
-    };
-
-    disagreeBtn.onclick = () => {
-      alert("You must agree to the Terms and Privacy Policy to proceed.");
-      termsModal.style.display = "none";
-      modal.style.display = "flex";
-      document.getElementById('password').value = "";
-    };
-  } else {
-    alert("Login failed, check your credentials.");
-    document.getElementById('password').value = "";
-  }
-  document.getElementById("installBtn").addEventListener("click", () => {
-  const proceed = confirm("You are about to leave KrynetAI.free to visit Krynet.ai.\n\nDo you want to continue?");
-  if (proceed) {
-    window.location.href = "https://krynet.ai";
-  }
-});
+    // Install button always available
+    document.getElementById("installBtn").addEventListener("click", () => {
+      const proceed = confirm("You are about to leave KrynetAI.free to visit Krynet.ai.\n\nDo you want to continue?");
+      if (proceed) {
+        window.location.href = "https://krynet.ai";
+      }
+    });
   </script>
 </body>
 </html>
